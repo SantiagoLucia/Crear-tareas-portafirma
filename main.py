@@ -30,7 +30,6 @@ async def get_token(user: str, passw: str) -> str:
             print(f'Other error occurred: {err}')
 
 
-# Clase de autenticación Bearer
 class BearerAuth(httpx.Auth):
     '''Clase de autenticación Bearer'''
     def __init__(self, token):
@@ -46,7 +45,6 @@ class BearerAuth(httpx.Auth):
         self.token = new_token
 
 
-# Función asincrónica para generar tareas de firma
 async def generar_tarea_firma(client: zeep.AsyncClient, sem: asyncio.Semaphore, auth: BearerAuth):
     '''Genera una tarea de firma en GDEBA'''
     async with sem:
@@ -91,7 +89,6 @@ async def generar_tarea_firma(client: zeep.AsyncClient, sem: asyncio.Semaphore, 
             await client.service.generarTareaGEDO(**request)
 
 
-# Función principal asincrónica
 async def main() -> None:
     '''Función principal asincrónica'''
     token = await get_token(USER, PASSW)
