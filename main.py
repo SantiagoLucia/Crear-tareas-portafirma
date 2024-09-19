@@ -17,8 +17,8 @@ CANTIDAD_TAREAS = int(config['GDEBA']['CANTIDAD_TAREAS'])
 LIMITE_CONCURRENCIA = int(config['GDEBA']['LIMITE_CONCURRENCIA'])
 
 
-# Función asincrónica para obtener el token
 async def get_token(user: str, passw: str) -> str:
+    '''Obtiene el token de autenticación'''
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(TOKEN_URL, auth=(user, passw))
@@ -32,19 +32,23 @@ async def get_token(user: str, passw: str) -> str:
 
 # Clase de autenticación Bearer
 class BearerAuth(httpx.Auth):
+    '''Clase de autenticación Bearer'''
     def __init__(self, token):
         self.token = token
 
     def auth_flow(self, request):
+        '''Agrega el token de autenticación a la cabecera de la petición'''
         request.headers['authorization'] = f'Bearer {self.token}'
         yield request
 
     def update_token(self, new_token):
+        '''Actualiza el token de autenticación'''
         self.token = new_token
 
 
 # Función asincrónica para generar tareas de firma
 async def generar_tarea_firma(client: zeep.AsyncClient, sem: asyncio.Semaphore, auth: BearerAuth):
+    '''Genera una tarea de firma en GDEBA'''
     async with sem:
         request = {
             'request': {
@@ -89,6 +93,7 @@ async def generar_tarea_firma(client: zeep.AsyncClient, sem: asyncio.Semaphore, 
 
 # Función principal asincrónica
 async def main() -> None:
+    '''Función principal asincrónica'''
     token = await get_token(USER, PASSW)
     auth = BearerAuth(token)
 
