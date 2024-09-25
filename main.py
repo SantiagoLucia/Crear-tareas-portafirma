@@ -35,7 +35,7 @@ class BearerAuth(httpx.Auth):
     def __init__(self, token):
         self.token = token
 
-    def auth_flow(self, request):
+    async def async_auth_flow(self, request):
         '''Agrega el token de autenticación a la cabecera de la petición'''
         request.headers['authorization'] = f'Bearer {self.token}'
         yield request
